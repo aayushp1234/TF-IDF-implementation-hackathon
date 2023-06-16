@@ -76,9 +76,12 @@ def calculate_sorted_order_of_documents(query_terms):
     potential_documents=dict(sorted(potential_documents.items(), key=lambda item: item[1], reverse=True))
     # print(potential_documents)
 
+    if (len(potential_documents) == 0):
+        print("No matching question found. Please search with more relevant terms.")
+
     for document_index in potential_documents:
         print("Document: ", Qlinks[int(document_index)-1], "Score: ", potential_documents[document_index], '\n')
-        
+
 query_string = input('Enter your input: ')
 query_terms=[term.lower() for term in query_string.strip().split()]
 print(query_terms)
