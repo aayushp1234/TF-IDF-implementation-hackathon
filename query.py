@@ -77,7 +77,7 @@ def calculate_sorted_order_of_documents(query_terms):
     # print(potential_documents)
 
     for document_index in potential_documents:
-        print("Document: ", Qlinks[int(document_index)], "Score: ", potential_documents[document_index], '\n')
+        print("Document: ", Qlinks[int(document_index)-1], "Score: ", potential_documents[document_index], '\n')
         
 query_string = input('Enter your input: ')
 query_terms=[term.lower() for term in query_string.strip().split()]
