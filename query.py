@@ -60,7 +60,7 @@ def get_idf_values(term):
 def calculate_sorted_order_of_documents(query_terms):
     potential_documents={}
     for term in query_terms:
-        if(vocab_idf_values[term]==0):
+        if (term not in vocab):
             continue
         tf_values_by_document=get_tf_dictionary(term)
         idf_value=get_idf_values(term)
