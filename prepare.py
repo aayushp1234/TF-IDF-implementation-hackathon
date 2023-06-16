@@ -2,6 +2,11 @@ with open('Leetcode-questionscrapper/index.txt','r') as f:
     lines = f.readlines()
     # print(lines)
 
+for i in range(1, 2037):
+    file_path = f'Leetcode-questionscrapper/Qdata/{i}/{i}.txt'
+    with open(file_path, 'r') as f:
+        lines2 = f.readlines()
+
 def preprocess(document_text):
     terms=[term.lower() for term in document_text.strip().split()[1:]]
     return terms
@@ -9,6 +14,17 @@ def preprocess(document_text):
 documents=[]
 vocab={}
 for index,line in enumerate(lines):
+    # print(index,line)
+    tokens=preprocess(line)
+    documents.append(tokens)
+    tokens=set(tokens)
+    for token in tokens:
+        if token not in vocab:
+            vocab[token]=1
+        else:
+            vocab[token]+=1
+
+for index,line in enumerate(lines2):
     # print(index,line)
     tokens=preprocess(line)
     documents.append(tokens)
