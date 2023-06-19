@@ -66,22 +66,24 @@ def calculate_sorted_order_of_documents(query_terms):
             continue
         tf_values_by_document = get_tf_dictionary(term)
         idf_value = get_idf_values(term)
-        print(tf_values_by_document, idf_value)
+        # print(tf_values_by_document, idf_value)
         for document in tf_values_by_document:
             if document not in potential_documents:
                 potential_documents[document] = tf_values_by_document[document] * idf_value
             else:
                 potential_documents[document] += tf_values_by_document[document] * idf_value
+        for doc in potential_documents:
+            potential_documents[doc]/=len(query_terms)
     potential_documents = dict(sorted(potential_documents.items(), key=lambda item: item[1], reverse=True))
     if (len(potential_documents) == 0):
         print("No matching question found. Please search with more relevant terms.")
     else:
+        print("Yess...found them")
         for document_index in potential_documents:
-                document_index = int(document_index)
-                if document_index >= 1 and document_index <= len(Qlinks):
-                    if document_index in potential_documents:
-                        print("Document: ", Qlinks[document_index-1], "Score: ", potential_documents[document_index], '\n')
-
+                # document_index = int(document_index)
+                if(int(document_index) <= len(Qlinks)):
+                    print("Document: ", Qlinks[int(document_index)], "Score: ", potential_documents[document_index], '\n')
+    # print(potential_documents)
 query_string = input('Enter your input: ')
 query_terms = [term.lower() for term in query_string.strip().split()]
 print(query_terms)
