@@ -30,28 +30,34 @@ def load_vocab():
     with open("tf-idf/vocab-values.txt", "r") as f:
         vocab_values = f.readlines()
     for word, value in zip(vocab_words, vocab_values):
-        vocab[word.strip()] = int(value.strip())
+        vocab[word.rstrip()] = int(value.rstrip())
     return vocab
 
 Qlinks = load_question_links()
 vocab_idf_values = load_vocab()
-documents = load_documents()
+document = load_documents()
 inverted_index = load_inverted_index_values()
+
+# print(inverted_index)
 
 def get_tf_dictionary(term):
     tf_values = {}
     if term in inverted_index:
-        for document in inverted_index[term]:
-            if document not in tf_values:
-                tf_values[document] = 1
+        for doc in inverted_index[term]:
+            if doc not in tf_values:
+                tf_values[doc] = 1
             else:
-                tf_values[document] += 1
-    for document in tf_values:
-        tf_values[document] /= len(documents[int(document)])
+                tf_values[doc] += 1
+    for doc in tf_values:
+        try:
+            tf_values[doc] /= len(document[int(doc)])
+        except(ZeroDivisionError, IndexError, ValueError) as e:
+            print(e)
+        # print (doc)
     return tf_values
 
 def get_idf_values(term):
-    return math.log(len(documents) / vocab_idf_values[term])
+    return math.log(1 + len(document) / (1 + vocab_idf_values[term]))
 
 def calculate_sorted_order_of_documents(query_terms):
     potential_documents = {}
@@ -60,19 +66,23 @@ def calculate_sorted_order_of_documents(query_terms):
             continue
         tf_values_by_document = get_tf_dictionary(term)
         idf_value = get_idf_values(term)
+        print(tf_values_by_document, idf_value)
         for document in tf_values_by_document:
             if document not in potential_documents:
                 potential_documents[document] = tf_values_by_document[document] * idf_value
-            potential_documents[document] += tf_values_by_document[document] * idf_value
-    for document_index in potential_documents:
-        try:
-            document_index = int(document_index)
-            if document_index >= 1 and document_index <= len(Qlinks):
-                if document_index in potential_documents:
-                    print("Document: ", Qlinks[document_index-1][:-2], "Score: ", potential_documents[document_index], '\n')
-        except ValueError:
-            continue
+            else:
+                potential_documents[document] += tf_values_by_document[document] * idf_value
+    potential_documents = dict(sorted(potential_documents.items(), key=lambda item: item[1], reverse=True))
+    if (len(potential_documents) == 0):
+        print("No matching question found. Please search with more relevant terms.")
+    else:
+        for document_index in potential_documents:
+                document_index = int(document_index)
+                if document_index >= 1 and document_index <= len(Qlinks):
+                    if document_index in potential_documents:
+                        print("Document: ", Qlinks[document_index-1], "Score: ", potential_documents[document_index], '\n')
 
 query_string = input('Enter your input: ')
 query_terms = [term.lower() for term in query_string.strip().split()]
+print(query_terms)
 calculate_sorted_order_of_documents(query_terms)

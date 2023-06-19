@@ -1,11 +1,15 @@
 with open('Leetcode-questionscrapper/index.txt','r') as f:
     lines = f.readlines()
     # print(lines)
+lines2=[]
 
 for i in range(1, 2037):
     file_path = f'Leetcode-questionscrapper/Qdata/{i}/{i}.txt'
     with open(file_path, 'r') as f:
-        lines2 = f.readlines()
+        for line in f:
+            if ' Example' in line:
+                break
+        lines2.append(line.strip())
 
 def preprocess(document_text):
     terms=[term.lower() for term in document_text.strip().split()[1:]]
