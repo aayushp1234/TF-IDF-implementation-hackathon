@@ -105,7 +105,7 @@ def calculate_sorted_order_of_documents(query_terms):
 # sorted_documents, sorted_document_indexes = calculate_sorted_order_of_documents(query_terms)
 # for result1, result2 in zip(sorted_documents,sorted_document_indexes):
 #     print(result1, result2)
-
+app.config['SECRET KEY'] ='aayush'
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
