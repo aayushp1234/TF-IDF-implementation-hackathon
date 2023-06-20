@@ -4,7 +4,7 @@ app = Flask(__name__)
 
 def load_documents():
     documents = []
-    with open("tf-idf/documents.txt", "r") as f:
+    with open("documents.txt", "r") as f:
         documents = f.readlines()
     # documents = [document.strip().split() for document in documents]
     return documents
@@ -17,7 +17,7 @@ def load_question_links():
 
 def load_inverted_index_values():
     inverted_index = {}
-    with open("tf-idf/inverted-index-values.txt", "r") as f:
+    with open("inverted-index-values.txt", "r") as f:
         inverted_index_terms = f.readlines()
     for row_num in range(0, len(inverted_index_terms), 2):
         term = inverted_index_terms[row_num].strip()
@@ -27,9 +27,9 @@ def load_inverted_index_values():
 
 def load_vocab():
     vocab = {}
-    with open("tf-idf/vocab-words.txt", "r") as f:
+    with open("vocab-words.txt", "r") as f:
         vocab_words = f.readlines()
-    with open("tf-idf/vocab-values.txt", "r") as f:
+    with open("vocab-values.txt", "r") as f:
         vocab_values = f.readlines()
     for word, value in zip(vocab_words, vocab_values):
         vocab[word.rstrip()] = int(value.rstrip())
