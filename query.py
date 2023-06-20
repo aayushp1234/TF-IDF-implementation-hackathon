@@ -1,10 +1,12 @@
 import math
+from flask import Flask, render_template, request, jsonify
+app = Flask(__name__)
 
 def load_documents():
     documents = []
     with open("tf-idf/documents.txt", "r") as f:
         documents = f.readlines()
-    documents = [document.strip().split() for document in documents]
+    # documents = [document.strip().split() for document in documents]
     return documents
 
 def load_question_links():
@@ -35,10 +37,10 @@ def load_vocab():
 
 Qlinks = load_question_links()
 vocab_idf_values = load_vocab()
-document = load_documents()
+document_headings = load_documents()
 inverted_index = load_inverted_index_values()
 
-# print(inverted_index)
+# print(document[0])
 
 def get_tf_dictionary(term):
     tf_values = {}
@@ -50,41 +52,72 @@ def get_tf_dictionary(term):
                 tf_values[doc] += 1
     for doc in tf_values:
         try:
-            tf_values[doc] /= len(document[int(doc)])
+            tf_values[doc] /= len(document_headings[int(doc)])
         except(ZeroDivisionError, IndexError, ValueError) as e:
             print(e)
         # print (doc)
     return tf_values
 
 def get_idf_values(term):
-    return math.log(1 + len(document) / (1 + vocab_idf_values[term]))
+    return math.log(1 + len(document_headings) / (1 + vocab_idf_values[term]))
 
 def calculate_sorted_order_of_documents(query_terms):
     potential_documents = {}
+    sorted_documents = []
+    sorted_documents_indexes=[]
+
     for term in query_terms:
         if term not in vocab_idf_values:
             continue
         tf_values_by_document = get_tf_dictionary(term)
         idf_value = get_idf_values(term)
-        # print(tf_values_by_document, idf_value)
+        
         for document in tf_values_by_document:
             if document not in potential_documents:
                 potential_documents[document] = tf_values_by_document[document] * idf_value
             else:
                 potential_documents[document] += tf_values_by_document[document] * idf_value
+        
         for doc in potential_documents:
-            potential_documents[doc]/=len(query_terms)
+            potential_documents[doc] /= len(query_terms)
+    
     potential_documents = dict(sorted(potential_documents.items(), key=lambda item: item[1], reverse=True))
-    if (len(potential_documents) == 0):
+    
+    if len(potential_documents) == 0:
         print("No matching question found. Please search with more relevant terms.")
     else:
-        print("Yess...found them")
+        # print("Yes...found them")
         for document_index in potential_documents:
-                # document_index = int(document_index)
-                if(int(document_index) <= len(Qlinks)):
-                    print("Document: ", Qlinks[int(document_index)], "Score: ", potential_documents[document_index], '\n')
-    # print(potential_documents)
-query_string = input('Enter your input: ')
-query_terms = [term.lower() for term in query_string.strip().split()]
-print(query_terms)
-calculate_sorted_order_of_documents(query_terms)
+            if int(document_index) < len(document_headings):
+                sorted_documents.append(Qlinks[int(document_index)])
+                sorted_documents_indexes.append(document_headings[int(document_index)].title())
+                # print("Document: ", Qlinks[int(document_index)], "Score: ", potential_documents[document_index], '\n')
+    
+    return [sorted_documents[:20:], sorted_documents_indexes[:20:]]
+
+    # print(sorted_documents)
+    # print(sorted_documents_indexes)
+
+# query_string = input('Enter your input: ')
+# query_terms = [term.lower() for term in query_string.strip().split()]
+# print(query_terms)
+
+# sorted_documents, sorted_document_indexes = calculate_sorted_order_of_documents(query_terms)
+# for result1, result2 in zip(sorted_documents,sorted_document_indexes):
+#     print(result1, result2)
+
+
+@app.route('/', methods=['GET', 'POST'])
+def home():
+    if request.method == 'POST':
+        query_string = request.form['query']
+        titles=[]
+        query_terms = [term.lower() for term in query_string.strip().split()]
+        results,result_headings = calculate_sorted_order_of_documents(query_terms)
+        for result in results:
+            titles.append([Qlinks.index(result)])
+        return render_template('index.html', results=results, titles=titles, result_headings=result_headings)
+    return render_template('index.html')
+
+if __name__ == '__main__':
+    app.run(debug=True)

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>DSA Search Engine</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0a2c46;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            background-color: #e8a83f;
+            border-radius: 10px;
+            padding: 20px;
+            /* box-shadow: 0 2px 5px rgba(13, 13, 13, 0.1); */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container::-webkit-scrollbar {
+            width: 2px;
+            /* Set the width of the scrollbar */
+        }
+
+        .container::-webkit-scrollbar-track {
+            background-color: #f1f1f1;
+            /* Set the background color of the track */
+        }
+
+        .container::-webkit-scrollbar-thumb {
+            background-color: #888;
+            /* Set the color of the scrollbar thumb */
+        }
+
+        .container::-webkit-scrollbar-thumb:hover {
+            background-color: #555;
+            /* Set the color of the scrollbar thumb on hover */
+        }
+
+        h1 {
+            font-size: 40px;
+            /* text-decoration: line-through ; */
+            font-style: oblique;
+            word-spacing: 5px;
+            /* text-transform: uppercase; */
+            font-weight: bolder;
+            text-shadow: #f1f1f1;
+            text-decoration-color: #004080;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #e7142c;
+            /* font-size: large; */
+            text-align: center;
+            margin-top: 0;
+        }
+
+        h2 {
+            position: relative;
+            display: inline-block;
+            font-size: larger;
+            font-weight: normal;
+            margin: 0;
+            text-align: left;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            font-weight: bold;
+            font-style: italic;
+        }
+
+        h1::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -5px;
+            right: -5px;
+            bottom: 0;
+            border: 2px solid white;
+            z-index: -1;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: -3px;
+            right: -3px;
+            bottom: 2px;
+            background-color: rgb(10, 5, 66);
+            z-index: -2;
+        }
+
+        form {
+            text-align: center;
+            background-color: #e8a83f;
+            /* Update the background color here */
+            padding: 20px;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            align-items: center;
+            width: 100%;
+            /* Add this line to make the form cover the entire width */
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            font-size: 18px;
+            width: 70%;
+            border: none;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        button[type="submit"] {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #33e622;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        .result-form {
+            max-height: 30vh;
+            overflow-y: auto;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 15px;
+        }
+
+        h2 {
+            margin-left: 10px;
+            color: #6157d9;
+            font-size: larger;
+            font-weight: normal;
+            margin: 0;
+            /* color: white; */
+            text-align: left;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            font-weight: bold;
+            font-style: italic;
+            text-decoration: underline;
+            text-decoration-color: #0a2c46;
+
+        }
+
+        a {
+            box-sizing: border-box;
+            width: 100%;
+            padding: 5px;
+            border-radius: 10px;
+            background-color: rgb(209, 212, 136);
+            color: #101d8f;
+            text-decoration: none;
+            text-align: center;
+            transition: color 0.3s ease;
+            margin-bottom: 10px;
+            /* Adjust the gap between the boxes */
+        }
+
+        a:hover {
+            color: #d6981d;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="container">
+        <h1>AlgoTrack</h1>
+        <form method="POST">
+            <input type="text" name="query" placeholder="Enter your query">
+            <br>
+            <button type="submit">Search</button>
+        </form>
+        <div class="result-box">
+        {% if results %}
+        <h2>Search Results</h2>
+        <ul>
+            <div class="result-form">
+                {% for i in range(results|length) %}
+                <div class="result-item">
+                    <li><a href="{{ results[i] }}" target="_blank">{{ result_headings[i] }}</a></li>
+                </div>
+                {% endfor %}
+            </div>
+        </ul>
+        {% endif %}
+        </div>
+    </div>
+</body>
+
+</html>

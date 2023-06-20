@@ -1,6 +1,7 @@
 with open('Leetcode-questionscrapper/index.txt','r') as f:
     lines = f.readlines()
     # print(lines)
+
 lines2=[]
 
 for i in range(1, 2037):
